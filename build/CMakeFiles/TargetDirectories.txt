@@ -1,0 +1,6 @@
+/mnt/c/Users/CLaue/OneDrive/Documents/Studium/SS2021/Proseminar_Physik/build/CMakeFiles/rebuild_cache.dir
+/mnt/c/Users/CLaue/OneDrive/Documents/Studium/SS2021/Proseminar_Physik/build/CMakeFiles/edit_cache.dir
+/mnt/c/Users/CLaue/OneDrive/Documents/Studium/SS2021/Proseminar_Physik/build/CMakeFiles/FDM.dir
+/mnt/c/Users/CLaue/OneDrive/Documents/Studium/SS2021/Proseminar_Physik/build/System/CMakeFiles/rebuild_cache.dir
+/mnt/c/Users/CLaue/OneDrive/Documents/Studium/SS2021/Proseminar_Physik/build/System/CMakeFiles/edit_cache.dir
+/mnt/c/Users/CLaue/OneDrive/Documents/Studium/SS2021/Proseminar_Physik/build/System/CMakeFiles/System.dir

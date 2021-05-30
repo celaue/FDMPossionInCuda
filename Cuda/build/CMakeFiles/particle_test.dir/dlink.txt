@@ -1,0 +1,1 @@
+/usr/bin/nvcc   -Xcompiler=-fPIC -Wno-deprecated-gpu-targets -shared -dlink CMakeFiles/particle_test.dir/ParallelSolver.cu.o -o CMakeFiles/particle_test.dir/cmake_device_link.o   -L/usr/local/cuda/lib64  -lcusolver -lcudart  -L"/lib/x86_64-linux-gnu"
