@@ -1,6 +1,0 @@
-/home/cedrik/Documents/Coding/C++/Cuda/ProSeminar/FDM_for_Poisson/build/CMakeFiles/rebuild_cache.dir
-/home/cedrik/Documents/Coding/C++/Cuda/ProSeminar/FDM_for_Poisson/build/CMakeFiles/edit_cache.dir
-/home/cedrik/Documents/Coding/C++/Cuda/ProSeminar/FDM_for_Poisson/build/CMakeFiles/fdm.dir
-/home/cedrik/Documents/Coding/C++/Cuda/ProSeminar/FDM_for_Poisson/build/src/CMakeFiles/rebuild_cache.dir
-/home/cedrik/Documents/Coding/C++/Cuda/ProSeminar/FDM_for_Poisson/build/src/CMakeFiles/edit_cache.dir
-/home/cedrik/Documents/Coding/C++/Cuda/ProSeminar/FDM_for_Poisson/build/src/CMakeFiles/libs.dir
