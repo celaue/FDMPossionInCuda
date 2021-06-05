@@ -1,1 +1,0 @@
-/usr/bin/g++     CMakeFiles/FDM.dir/main.cpp.o  -o FDM  System/libSystem.a 

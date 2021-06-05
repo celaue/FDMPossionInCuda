@@ -1,4 +1,4 @@
-# Install script for directory: /mnt/c/Users/CLaue/OneDrive/Documents/Studium/SS2021/Proseminar_Physik
+# Install script for directory: /home/cedrik/Documents/Coding/C++/Cuda/ProSeminar/FDM_for_Poisson
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,7 +39,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/mnt/c/Users/CLaue/OneDrive/Documents/Studium/SS2021/Proseminar_Physik/build/System/cmake_install.cmake")
+  include("/home/cedrik/Documents/Coding/C++/Cuda/ProSeminar/FDM_for_Poisson/build/src/cmake_install.cmake")
 
 endif()
 
@@ -51,5 +51,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/mnt/c/Users/CLaue/OneDrive/Documents/Studium/SS2021/Proseminar_Physik/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/cedrik/Documents/Coding/C++/Cuda/ProSeminar/FDM_for_Poisson/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
