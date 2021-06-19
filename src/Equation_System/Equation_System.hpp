@@ -11,7 +11,7 @@
 #include <set>
 #include <cmath>
 #include <fstream>
-#include "Cuda/ParallelSolver.hpp"
+#include "LinearSolver/LinearSolver.hpp"
 
 
 struct SystemObjects{
@@ -28,7 +28,7 @@ struct SystemObjects{
 //////////////////////////////////////////////////////////////////
 class EquationSystem{
     public:
-        EquationSystem(int size,int length) : size_{size},length_{length} {
+        EquationSystem(int size,double length) : size_{size},length_{length} {
             dx_ = length_/(size_-1);
             m_size_ = size_*size_;
             L_gen_ = Eigen::MatrixXd::Zero(m_size_, m_size_);
@@ -43,11 +43,11 @@ class EquationSystem{
         void init_System(){
             generate_equation_system();
         }
-        std::vector<double> get_solution(bool parallel);
+        std::vector<double> get_solution(std::string type_of_solver);
         void write_to_csv();
         void write_to_vector(std::vector<double> &x_data,std::vector<double> &y_data,std::vector<double> &z_data);
     
-    
+        auto get_L(){return L_;}
     private:
         void generate_equation_system();
         void generate_init_L();

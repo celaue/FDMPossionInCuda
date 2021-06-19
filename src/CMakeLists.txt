@@ -11,11 +11,13 @@ aux_source_directory(. SRCS )
 aux_source_directory(./Plotter PLOTTER)
 aux_source_directory(./Cuda CUDA)
 aux_source_directory(./Equation_System SYSTEM)
+aux_source_directory(./LinearSolver LINSOL)
 
 add_library(${PROJECT_NAME} SHARED ${SRCS}
             ${PLOTTER}
             ${CUDA}
             ${SYSTEM}
+            ${LINSOL}
             )
 
 target_include_directories(${PROJECT_NAME} PUBLIC .)

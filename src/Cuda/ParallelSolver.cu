@@ -1,10 +1,57 @@
-
-
 #include "ParallelSolver.hpp"
+
+
+
+__device__ unsigned int d_not_tolerent;
+__device__  double d_marker;
+__device__ unsigned int d_same;
+__device__ unsigned int d_pos_of_same;
+
+__global__ void reset_d_not_tolerent (){
+    d_not_tolerent = 0;
+}
+
+
+__global__ void calc_jacobi_step(int n,double *A,double *b,double *x, double *residual){
+    
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    double new_component=0;
+    double zw = 0;
+    for(int j=0;j<n;j++){
+        zw += A[j*n+i]*x[j];
+    }
+    if(A[i*n+i]!= 0.0){
+        new_component = (b[i]- zw)/A[i*n+i]+x[i];
+        residual[i]=new_component-x[i];
+    }else{
+        residual[i]=0;
+    }
+    
+}
+
+__global__ void update_and_check_tol(double *x, double *residual,double tol){
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    if(std::abs(residual[i])>tol){
+        if(d_marker !=residual[i] || d_pos_of_same != i){
+            d_not_tolerent=1;
+            d_marker = residual[i];
+            d_pos_of_same =i;
+            d_same =0;
+        }else{
+            if(d_same<10){
+                d_not_tolerent=1;
+            }
+            d_same++;
+        }
+    }
+    x[i]+=residual[i];
+}
+
+
 
 namespace CUDA {
 
-Eigen::VectorXd parallel_LU_pivot(Eigen::MatrixXd A,Eigen::VectorXd b){
+Eigen::VectorXd parallel_LU_pivot(Eigen::MatrixXd &A,Eigen::VectorXd &b){
     
     cusolverDnHandle_t cusolverH = NULL;
     cudaStream_t stream = NULL;
@@ -126,4 +173,89 @@ Eigen::VectorXd parallel_LU_pivot(Eigen::MatrixXd A,Eigen::VectorXd b){
     return x;
 }
 
+
+
+
+
+Eigen::VectorXd parallel_Jacobi_method(Eigen::MatrixXd &A,Eigen::VectorXd &b,double error){
+    
+    cudaError_t cudaStat1 = cudaSuccess;
+    cudaError_t cudaStat2 = cudaSuccess;
+    cudaError_t cudaStat3 = cudaSuccess;
+    cudaError_t cudaStat4 = cudaSuccess;
+    cudaError_t cudaStat5 = cudaSuccess;
+    cudaError_t cudaStat6 = cudaSuccess;
+    cudaError_t cudaStat7 = cudaSuccess;
+    int n = A.cols();
+    Eigen::VectorXd x_0 = b;
+
+    double *d_A = nullptr; // device copy of A 
+    double *d_b = nullptr; // device copy of b
+    double  *d_x = nullptr; // iterative solution
+    double  *d_residual = nullptr;
+    bool  *d_isfinished = nullptr;
+    bool  *d_component_finished =nullptr;
+
+
+    /////////////////
+    // Copy to GPU //
+    /////////////////
+    cudaStat1 = cudaMalloc (&d_A, sizeof(double)*n*n);
+    cudaStat2 = cudaMalloc (&d_b, sizeof(double)*n);
+    cudaStat3 = cudaMalloc (&d_x, sizeof(double)*n);
+    cudaStat4 = cudaMalloc (&d_residual, sizeof(double)*n);
+    cudaStat5 = cudaMalloc (&d_isfinished, sizeof(bool));
+    // cudaStat6 = cudaMalloc (&d_n, sizeof(int));
+    cudaStat7 = cudaMalloc (&d_component_finished, sizeof(bool)*n);
+    assert(cudaSuccess == cudaStat1);
+    assert(cudaSuccess == cudaStat2);
+    assert(cudaSuccess == cudaStat3);
+    assert(cudaSuccess == cudaStat4);
+    assert(cudaSuccess == cudaStat5);
+    assert(cudaSuccess == cudaStat6);
+    assert(cudaSuccess == cudaStat7);
+    cudaStat1 = cudaMemcpy(d_A, A.data(), sizeof(double)*n*n, cudaMemcpyHostToDevice);
+    cudaStat2 = cudaMemcpy(d_b, b.data(), sizeof(double)*n, cudaMemcpyHostToDevice);
+    cudaStat3 = cudaMemcpy(d_x, x_0.data(), sizeof(double)*n, cudaMemcpyHostToDevice);
+    // cudaStat4 = cudaMemcpy(d_x, &n, sizeof(int), cudaMemcpyHostToDevice);
+    assert(cudaSuccess == cudaStat1);
+    assert(cudaSuccess == cudaStat2);
+    assert(cudaSuccess == cudaStat3);
+
+    int blockSize = 256;
+    int numBlocks = (n + blockSize - 1) / blockSize;
+    int stop_after =100000;
+    int counter = 0;
+    typeof(d_not_tolerent) h_not_tolerent=1;
+    while(counter < stop_after && h_not_tolerent){
+        calc_jacobi_step<<<numBlocks, blockSize>>>(n,d_A,d_b,d_x,d_residual);
+        update_and_check_tol<<<numBlocks, blockSize>>>(d_x, d_residual, error);
+        if(counter%10 ==0){
+
+            cudaMemcpyFromSymbol(&h_not_tolerent, d_not_tolerent, sizeof(d_not_tolerent)); 
+            reset_d_not_tolerent<<<1, 1>>>(); 
+        }
+        counter++;
+        // std::cout<<counter<<"\n";
+    }
+
+    cudaStat1 = cudaMemcpy(x_0.data(), d_x, sizeof(double)*n, cudaMemcpyDeviceToHost);
+    assert(cudaSuccess == cudaStat1);
+    /////////////////////
+    //  free recourses //
+    /////////////////////
+    if (d_A    ) cudaFree(d_A);
+    if (d_b    ) cudaFree(d_b);
+    if (d_x    ) cudaFree(d_x);
+    if (d_residual    ) cudaFree(d_residual);
+    if (d_isfinished    ) cudaFree(d_isfinished);
+    if (d_component_finished    ) cudaFree(d_component_finished);
+
+    cudaDeviceReset();
+
+    return x_0;
 }
+
+}
+
+

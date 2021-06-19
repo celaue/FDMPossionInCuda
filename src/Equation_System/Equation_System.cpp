@@ -33,17 +33,22 @@ void EquationSystem::generate_init_L(){
 //////////////////////////////////////////////////
 // Solve equation system using Standard methods //
 //////////////////////////////////////////////////
-std::vector<double> EquationSystem::get_solution(bool parallel){
+std::vector<double> EquationSystem::get_solution(std::string type_of_solver){
     std::cout<<"Solving equation system...\n";
     Eigen::VectorXd x_zw{};
-    Eigen::VectorXd b_copy = b_;
-    Eigen::MatrixXd L_copy = L_;
+    
    
-    if(parallel){
-        x_zw = CUDA::parallel_LU_pivot(L_copy,b_copy);
+    if(type_of_solver == "LUparallel"){
+        x_zw = LinearSolver::solveLU(L_,b_,true);
+    }else if(type_of_solver == "LUsequential"){
+        x_zw = LinearSolver::solveLU(L_,b_,false);
     }
-    else{
-        x_zw = L_copy.partialPivLu().solve(b_copy);
+    else if(type_of_solver == "Jacobiparallel"){
+        x_zw = LinearSolver::solveJacobian(L_,b_,0.0001,true);
+    }else if(type_of_solver == "Jacobisequential"){
+        x_zw = LinearSolver::solveJacobian(L_,b_,0.0001,false);
+    }else{
+        throw std::invalid_argument( "recieved invalid solver" );
     }
 
     //combine information from boundaries and equation solution
@@ -71,12 +76,13 @@ void EquationSystem::generate_equation_system(){
 
     //Define boundary objects and Charge distribution
     SystemObjects all_boundaries{};
-    all_boundaries.add(get_line(0.4,0.4,0.4,0.8,1));
-    all_boundaries.add(get_filled_circ(0.6,0.6,0.1,0));
-    all_boundaries.add(get_empty_tri(0.2,0.2,0.5,0.2,0.5,0.7,1));
+    // all_boundaries.add(get_line(0.4,0.4,0.4,0.8,1));
+    all_boundaries.add(get_empty_circ(0.6,0.6,0.1,1));
+    // all_boundaries.add(get_empty_tri(0.2,0.2,0.5,0.2,0.5,0.7,1));
     
     SystemObjects all_charge_dist{};
-    all_charge_dist.add(get_filled_rect(0,0,1,1,100));
+    // all_charge_dist.add(get_filled_rect(0,0,1,1,100));
+    all_charge_dist.add(get_filled_circ(0.6,0.6,0.1,100));
     
     //Evaluates elements of b corresponding to boundaries
     for(int i =0;i<all_boundaries.obj_value_list.size();i++){
