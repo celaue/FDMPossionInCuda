@@ -10,7 +10,7 @@ find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 aux_source_directory(. SRCS )
 aux_source_directory(./Plotter PLOTTER)
 aux_source_directory(./Cuda CUDA)
-aux_source_directory(./Equation_System SYSTEM)
+aux_source_directory(./EquationSystem SYSTEM)
 aux_source_directory(./LinearSolver LINSOL)
 
 add_library(${PROJECT_NAME} SHARED ${SRCS}

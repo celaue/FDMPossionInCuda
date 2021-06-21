@@ -1,4 +1,4 @@
-#include "Equation_System/Equation_System.hpp"
+#include "EquationSystem/EquationSystem.hpp"
 #include "Plotter/Plotter.hpp"
 #include <iostream>
 #include <ctime>

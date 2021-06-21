@@ -1,4 +1,4 @@
-#include "Equation_System.hpp"
+#include "EquationSystem.hpp"
 
 
 
@@ -77,8 +77,8 @@ void EquationSystem::generate_equation_system(){
     //Define boundary objects and Charge distribution
     SystemObjects all_boundaries{};
     // all_boundaries.add(get_line(0.4,0.4,0.4,0.8,1));
-    all_boundaries.add(get_empty_circ(0.6,0.6,0.1,1));
-    // all_boundaries.add(get_empty_tri(0.2,0.2,0.5,0.2,0.5,0.7,1));
+    // all_boundaries.add(get_empty_circ(0.6,0.6,0.1,1));
+    all_boundaries.add(get_empty_tri(0.2,0.2,0.5,0.2,0.5,0.7,1));
     
     SystemObjects all_charge_dist{};
     // all_charge_dist.add(get_filled_rect(0,0,1,1,100));

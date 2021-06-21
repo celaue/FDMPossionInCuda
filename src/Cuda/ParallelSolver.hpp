@@ -10,7 +10,10 @@
 
 
 namespace CUDA {
+    //calculate solution of linear system (Ax = b) using LU decompostion with parital pivoting ( LU = PA )
     Eigen::VectorXd parallel_LU_pivot(Eigen::MatrixXd &A,Eigen::VectorXd &b);
+
+    //calculate solution of linear system (Ax = b) using iterative Jacobi method with "error" tolerance
     Eigen::VectorXd parallel_Jacobi_method(Eigen::MatrixXd &A,Eigen::VectorXd &b,double error);
 }
 

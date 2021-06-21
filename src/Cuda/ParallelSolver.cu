@@ -1,7 +1,7 @@
 #include "ParallelSolver.hpp"
 
 
-
+//Define device variables for stopping condition
 __device__ unsigned int d_not_tolerent;
 __device__  double d_marker;
 __device__ unsigned int d_same;
@@ -12,6 +12,8 @@ __global__ void reset_d_not_tolerent (){
 }
 
 
+
+//Calculate jacobi step for each element seperatly
 __global__ void calc_jacobi_step(int n,double *A,double *b,double *x, double *residual){
     
     int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -29,6 +31,8 @@ __global__ void calc_jacobi_step(int n,double *A,double *b,double *x, double *re
     
 }
 
+
+//Check if solution has converged and update new solution
 __global__ void update_and_check_tol(double *x, double *residual,double tol){
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     if(std::abs(residual[i])>tol){
@@ -48,7 +52,7 @@ __global__ void update_and_check_tol(double *x, double *residual,double tol){
 }
 
 
-
+//external functions
 namespace CUDA {
 
 Eigen::VectorXd parallel_LU_pivot(Eigen::MatrixXd &A,Eigen::VectorXd &b){
@@ -222,23 +226,26 @@ Eigen::VectorXd parallel_Jacobi_method(Eigen::MatrixXd &A,Eigen::VectorXd &b,dou
     assert(cudaSuccess == cudaStat2);
     assert(cudaSuccess == cudaStat3);
 
-    int blockSize = 256;
+    int blockSize = 16; //best performance for 16 threads
     int numBlocks = (n + blockSize - 1) / blockSize;
     int stop_after =100000;
     int counter = 0;
     typeof(d_not_tolerent) h_not_tolerent=1;
+    ////////////////////////////
+    // Calculate jacobi steps //
+    ////////////////////////////
     while(counter < stop_after && h_not_tolerent){
         calc_jacobi_step<<<numBlocks, blockSize>>>(n,d_A,d_b,d_x,d_residual);
         update_and_check_tol<<<numBlocks, blockSize>>>(d_x, d_residual, error);
-        if(counter%10 ==0){
 
+        if(counter%10 ==0){
             cudaMemcpyFromSymbol(&h_not_tolerent, d_not_tolerent, sizeof(d_not_tolerent)); 
             reset_d_not_tolerent<<<1, 1>>>(); 
         }
         counter++;
-        // std::cout<<counter<<"\n";
     }
 
+    //Copy solution to host
     cudaStat1 = cudaMemcpy(x_0.data(), d_x, sizeof(double)*n, cudaMemcpyDeviceToHost);
     assert(cudaSuccess == cudaStat1);
     /////////////////////
