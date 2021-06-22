@@ -1,6 +1,6 @@
 #include "LinearSolver.hpp"
 
-Eigen::VectorXd LinearSolver::solveJacobianSequential(Eigen::MatrixXd &A,Eigen::VectorXd &b,double tol){
+Eigen::VectorXd LinearSolver::solve_Jacobian_sequential(Eigen::MatrixXd &A,Eigen::VectorXd &b,double tol){
     int n = A.cols();
     std::vector<double> residual(n);
     Eigen::VectorXd x= b;

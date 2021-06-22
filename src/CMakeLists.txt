@@ -1,7 +1,7 @@
 project(libs)
 
 #external libraries used in Code 
-link_libraries(-lcusolver -lcudart) # include cuda
+link_libraries(-lcusolver -lcudart) # include cuda and cudasolver
 link_libraries(-lmgl-qt5 -lmgl) # Plotter mathgl
 find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 

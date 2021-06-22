@@ -39,14 +39,13 @@ std::vector<double> EquationSystem::get_solution(std::string type_of_solver){
     
    
     if(type_of_solver == "LUparallel"){
-        x_zw = LinearSolver::solveLU(L_,b_,true);
+        x_zw = LinearSolver::solve_LU(L_,b_,true);
     }else if(type_of_solver == "LUsequential"){
-        x_zw = LinearSolver::solveLU(L_,b_,false);
-    }
-    else if(type_of_solver == "Jacobiparallel"){
-        x_zw = LinearSolver::solveJacobian(L_,b_,0.0001,true);
+        x_zw = LinearSolver::solve_LU(L_,b_,false);
+    }else if(type_of_solver == "Jacobiparallel"){
+        x_zw = LinearSolver::solve_Jacobian(L_,b_,0.0001,true);
     }else if(type_of_solver == "Jacobisequential"){
-        x_zw = LinearSolver::solveJacobian(L_,b_,0.0001,false);
+        x_zw = LinearSolver::solve_Jacobian(L_,b_,0.0001,false);
     }else{
         throw std::invalid_argument( "recieved invalid solver" );
     }

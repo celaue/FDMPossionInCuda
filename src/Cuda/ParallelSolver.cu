@@ -73,12 +73,12 @@ Eigen::VectorXd parallel_LU_pivot(Eigen::MatrixXd &A,Eigen::VectorXd &b){
     Eigen::VectorXd x=Eigen::VectorXd::Zero(m); // x = A\B 
     int info = 0;     // host copy of error info 
 
-    double *d_A = NULL; // device copy of A 
-    double *d_b = NULL; // device copy of B 
-    int *d_Ipiv = NULL; // pivoting sequence
-    int *d_info = NULL; // error info 
+    double *d_A = nullptr; // device copy of A 
+    double *d_b = nullptr; // device copy of B 
+    int *d_Ipiv = nullptr; // pivoting sequence
+    int *d_info = nullptr; // error info 
     int  lwork = 0;     // size of workspace
-    double *d_work = NULL; // device workspace for getrf
+    double *d_work = nullptr; // device workspace for getrf
 
     status = cusolverDnCreate(&cusolverH);
     assert(CUSOLVER_STATUS_SUCCESS == status);
@@ -180,7 +180,6 @@ Eigen::VectorXd parallel_LU_pivot(Eigen::MatrixXd &A,Eigen::VectorXd &b){
 
 
 
-
 Eigen::VectorXd parallel_Jacobi_method(Eigen::MatrixXd &A,Eigen::VectorXd &b,double error){
     
     cudaError_t cudaStat1 = cudaSuccess;
@@ -262,6 +261,8 @@ Eigen::VectorXd parallel_Jacobi_method(Eigen::MatrixXd &A,Eigen::VectorXd &b,dou
 
     return x_0;
 }
+
+
 
 }
 
